@@ -1,3 +1,4 @@
+import sys
 import regex as re
 
 def format_header(header): 
@@ -14,7 +15,18 @@ def format_header(header):
 
 
 # set file from which to extract a TOC 
-file = "test-md.md"
+try: 
+	file = sys.argv[1]  # "test-md.md"
+	print(f"Trying to extract TOC from {file}...\n\n")
+except IndexError: 
+	raise IndexError("Missing CLI-argument: markdown-file to extract TOC.\n")
+
+# Option to write TOC to a textfile:  {file}-toc.txt
+try: 
+	write_to_txt = int(sys.argv[2])
+except IndexError: 
+	write_to_txt = 0 
+
 with open(file, "r", encoding="utf-8") as f:
 	content = f.read()
 
@@ -46,3 +58,9 @@ for i, (h, level, link) in enumerate(toc_levels):
 # print toc
 for _ in toc:
 	print(_)
+
+if write_to_txt == 1:
+	print(f"\n\nWriting TOC to {file}-toc.txt ...")
+	with open(f"{file}-toc.txt", "w") as writer:
+	    for f in toc:
+	        writer.write(f + "\n")
