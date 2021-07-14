@@ -1,25 +1,5 @@
-+++
-title = "Style Guide: Python (NEW)"
-description = ""
-menu = "main"
-weight = 1
-+++
 
------
-
-Authors:
-[Victor Seifert](https://confluence.alexanderthamm.com/display/~victor.seifert)
-[Florian Wasserrab](https://confluence.alexanderthamm.com/display/~florian.wasserrab)
-
-
-
-https://xkcd.com/1513/
-
-> Inexperience is a valid excuse for inefficient code, but not for the style in which it is written!
-
-
-
-# Introduction and disclaimer
+# Introduction to the development guide and disclaimer
 
 The general idea of this chapter is to give you a quick overview of the best-practice style concepts. Most of it is a shortened version of pep8, pep257, pep484 and the Google Python Style Guide. 
 
