@@ -125,7 +125,6 @@ def main():
         help="Set the number of levels which will be included in the TOC.",
     )
 
-
     args = parser.parse_args()
     
     # read file
@@ -156,6 +155,15 @@ def main():
 
     if args.save_to_md:
         print(f"\n\nWriting TOC to {file}-toc.md ...")
-        with open(f"{file}-toc.md", "w") as writer:
+
+        # determine filename
+        if file[-3:] == '.md':
+            output_name = file[:-3] + '-toc.md'
+        elif file[-9:] == '.markdown':
+            output_name = file[:-9] + '-toc.markdown'
+        else: 
+            output_name = file + '-toc.md'
+        
+        with open(output_name, "w") as writer:
             for f in toc:
                 writer.write(f + "\n")
