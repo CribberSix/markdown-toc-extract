@@ -11,17 +11,18 @@ Extract a table of contents from a markdown file via cmd.
 
 
 ```sh
-extracttoc [-h] [-s] file
-
+usage: extracttoc [-h] [-s] [-l LEVEL_LIMIT] file
 
 Extracts the table of contents from a markdown file.
 
 positional arguments:
-  file        Provide a markdown file from which to extract the toc.
+  file                  Provide a markdown file from which to extract the toc.
 
 optional arguments:
-  -h, --help  show this help message and exit
-  -s, --save  Write the table of contents to a md file. File name will be: {input-file-name}-toc.md
+  -h, --help            show this help message and exit
+  -s, --save            Write the table of contents to a md file. File name will be: {input-file-name}-toc.md
+  -l LEVEL_LIMIT, --levels LEVEL_LIMIT
+                        Set the number of levels which will be included in the TOC.
 ```
 
 

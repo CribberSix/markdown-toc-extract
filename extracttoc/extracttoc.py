@@ -52,13 +52,16 @@ def remove_code_blocks(content):
     return content_cleaned
 
 
-def create_toc(toc_levels):
+def create_toc(toc_levels, level_limit):
     """Creates a list of strings representing the items in the table of content.
 
+    The function works up to 111 header levels.
 
     :param toc_levels:  A list containing a tuple consisting of the header, 
     					the level of the header and a formatted markdown-link to the header.
     :type toc_levels: List<Tuple<str, int, str>>
+    :param level_limit: Limits the number of levels included in the TOC
+    :rtype level_limit: int 
     :return: Ordered items of the table of contents.
     :rtype: List<str>
 
@@ -69,11 +72,10 @@ def create_toc(toc_levels):
                     ('Second level', 2, '#Second-level')
                     ('First level again', 1, '#First-level-again')
             ]
-
     """
 
     toc = ["# Table of Contents"]
-    nums = dict.fromkeys(range(1, 111), 1)
+    nums = dict.fromkeys(range(1, 111), 1) 
     prev_level = 1
     for i, (h, level, link) in enumerate(toc_levels):
 
@@ -83,7 +85,8 @@ def create_toc(toc_levels):
                 nums[x] = 1
 
         # construct TOC element
-        toc.append("\t" * (level - 1) + f"{nums[level]}. [" + h + f"]({link})")
+        if level <= level_limit:
+            toc.append("\t" * (level - 1) + f"{nums[level]}. [" + h + f"]({link})")
 
         # increment header level
         nums[level] = nums[level] + 1
@@ -113,8 +116,18 @@ def main():
         help="Write the table of contents to a md file. File name will be: {input-file-name}-toc.md",
     )
 
-    args = parser.parse_args()
+    parser.add_argument(
+        "-l",
+        "--levels",
+        dest="level_limit",
+        default=3,
+        type=int,
+        help="Set the number of levels which will be included in the TOC.",
+    )
 
+
+    args = parser.parse_args()
+    
     # read file
     file = args.file[0]
 
@@ -126,14 +139,16 @@ def main():
 
     # remove code-blocks by iterating over lines and skipping lines between lines which start with ``` ....
     content_cleaned = "\n".join(remove_code_blocks(content))
-
+    
     # find header lines and determine header levels and format links
-    pattern = r"\n(#+\ .*)\n"
-    headers = re.findall(pattern, content_cleaned)  # yields a list of strings
-    toc_levels = [format_header(h) for h in headers]
+    pattern_firstline = r"^(#+\ .*)\n"
+    first_line_headers = re.findall(pattern_firstline, content_cleaned)
+    normal_pattern = r"\n(#+\ .*)\n"
+    headers = re.findall(normal_pattern, content_cleaned)  # yields a list of strings
+    toc_levels = [format_header(h) for h in first_line_headers + headers]   
 
     # Create table of contents
-    toc = create_toc(toc_levels)
+    toc = create_toc(toc_levels, args.level_limit)
 
     # Output toc
     for _ in toc:
