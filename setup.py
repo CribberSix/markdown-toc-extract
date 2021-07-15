@@ -15,7 +15,7 @@ setup(
     long_description=README,
     long_description_content_type='text/markdown',
     url='https://github.com/CribberSix/markdown-toc-extract',
-    version='0.0.3',
+    version='0.1',
     python_requires=">=3.6",
     author='CribberSix',
     author_email='cribbersix@gmail.com',
