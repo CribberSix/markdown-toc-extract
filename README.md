@@ -8,6 +8,11 @@
 
 
 Extract the table of contents from a markdown file with an easy to use command line tool.
+## Installation 
+
+```sh
+pip install extracttoc
+```
 
 ## Usage
 
