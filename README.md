@@ -26,17 +26,21 @@ optional arguments:
                         Set the number of levels which will be included in the TOC.
 ```
 
-## Example 
+## Examples 
 
-```sh
-extracttoc -l 2 myfile.md
+```python
+> extracttoc myfile.md
+
+> extracttoc -l 2 myfile.md  # limit toc to level 2
+
+> extracttoc -l 2 -s myfile.md  # limit toc to level 2 and write to separate file
 ```
 
 
 
-## Limitation
+## Limitations
 
-The cli tool only works with hashtag-formatted headers, not with equal-sign-formatted headers! 
+The cli tool only works with hashtag-formatted headers, but not with equal-sign-formatted headers! 
 
 ```
 # This header will be recognized and included in the TOC 
