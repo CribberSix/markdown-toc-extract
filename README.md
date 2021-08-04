@@ -7,8 +7,9 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg?style=plastic)](https://www.python.org/)
 
 
-Extract a table of contents from a markdown file via cmd.
+Extract the table of contents from a markdown file with an easy to use command line tool.
 
+## Usage
 
 ```sh
 usage: extracttoc [-h] [-s] [-l LEVEL_LIMIT] file
@@ -25,4 +26,28 @@ optional arguments:
                         Set the number of levels which will be included in the TOC.
 ```
 
+## Example 
 
+```sh
+extracttoc -l 2 myfile.md
+```
+
+
+
+## Limitation
+
+The cli tool only works with hashtag-formatted headers, not with equal-sign-formatted headers! 
+
+```
+# This header will be recognized and included in the TOC 
+
+Some text paragraph. 
+
+
+
+This header will not be recongized. 
+=== 
+
+Some text paragraph. 
+
+```
