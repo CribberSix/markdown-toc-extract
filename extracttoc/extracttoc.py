@@ -2,36 +2,33 @@ import sys
 from os.path import exists
 import regex as re
 import argparse
+import pyperclip as cp
 
 
 def format_header(header):
-    """Formatting tasks. 
+    """Calculates the level of the header, removes leading and trailing whitespaces and creates the markdown-link.
 
-    Removes leading or trailing whitespaces. 
-    Calculates the level of the header. 
-    Creates the markdown-link.
-
-    :param header: Header line from the markdown file
+    :param header: header line from the markdown file
     :type header: str
-    :return: A tuple consisting of the cleaned header, the header level and the formatted markdown link. 
+    :return: a tuple consisting of the cleaned header, the header level and the formatted markdown link.
     :rtype: Tuple<str, str, str>
     """
 
-    # detect header level
+    # determine header level
     level = 0
     while header[0] == "#":
         level += 1
         header = header[1:]
 
-    # create link by replacing whitespaces with hyphens and removing colons
-    link = "#" + header.strip().replace(" ", "-").replace(":", "")
-    return (header.strip(), level, link)
+    # create clickable link by replacing whitespaces with hyphens and removing colons
+    headerlink = "#" + re.sub(r'[^a-zA-Z 0-9]', '', header).lower().strip().replace(" ", "-").replace("--", "-")
+    return (header.strip(), level, headerlink)
 
 
 def remove_code_blocks(content):
-    """Removes code blocks from the markdown file.
+    """Removes lines starting with "```" (=code blocks) from the markdown file.
 
-    Since code blocks can contain lines with leading hashtags 
+    Since code blocks can contain lines with leading hashtags
     (e.g. comments in python) they need to be removed before looking for headers.
 
     :param content: file contents as a list of strings
@@ -39,14 +36,13 @@ def remove_code_blocks(content):
     :return: Cleaned List without codeblock lines
     :rtype: List<str>
     """
-    pattern_codeblock = r"^```"
     content_cleaned = []
     code_block = False
 
-    for x in content.split("\n"):
-        if len(re.findall(pattern_codeblock, x)) > 0:
+    for x in content:
+        if x[:3] == '```':
             code_block = not code_block
-        if not code_block:
+        elif not code_block:
             content_cleaned.append(x)
 
     return content_cleaned
@@ -57,11 +53,11 @@ def create_toc(toc_levels, level_limit):
 
     The function works up to 111 header levels.
 
-    :param toc_levels:  A list containing a tuple consisting of the header, 
+    :param toc_levels:  A list containing a tuple consisting of the header,
     					the level of the header and a formatted markdown-link to the header.
     :type toc_levels: List<Tuple<str, int, str>>
     :param level_limit: Limits the number of levels included in the TOC
-    :rtype level_limit: int 
+    :rtype level_limit: int
     :return: Ordered items of the table of contents.
     :rtype: List<str>
 
@@ -75,7 +71,9 @@ def create_toc(toc_levels, level_limit):
     """
 
     toc = ["# Table of Contents"]
-    nums = dict.fromkeys(range(1, 111), 1) 
+    # create a dict to store the header numbering for each level
+    max_level = max([x[1] for x in toc_levels]) + 1
+    nums = dict.fromkeys(range(1, max_level), 1)
     prev_level = 1
     for i, (h, level, link) in enumerate(toc_levels):
 
@@ -113,20 +111,36 @@ def main():
         "--save",
         action="store_true",
         dest="save_to_md",
-        help="Write the table of contents to a md file. File name will be: {input-file-name}-toc.md",
+        help="Write the TOC to a md file. File name will be: {input-file-name}-toc.md",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--copy",
+        action="store_true",
+        dest="save_to_clipboard",
+        help="Copy the TOC to your clipboard",
+    )
+
+    parser.add_argument(
+        "-i",
+        "--insert",
+        action="store_true",
+        dest="insert_in_file",
+        help="Insert the TOC directly into the file in front of the first line.",
     )
 
     parser.add_argument(
         "-l",
         "--levels",
-        dest="level_limit",
+        dest="limit",
         default=3,
         type=int,
         help="Set the number of levels which will be included in the TOC.",
     )
 
     args = parser.parse_args()
-    
+
     # read file
     file = args.file[0]
 
@@ -137,21 +151,32 @@ def main():
         content = f.read()
 
     # remove code-blocks by iterating over lines and skipping lines between lines which start with ``` ....
-    content_cleaned = "\n".join(remove_code_blocks(content))
-    
-    # find header lines and determine header levels and format links
-    pattern_firstline = r"^(#+\ .*)\n"
-    first_line_headers = re.findall(pattern_firstline, content_cleaned)
-    normal_pattern = r"\n(#+\ .*)\n"
-    headers = re.findall(normal_pattern, content_cleaned)  # yields a list of strings
-    toc_levels = [format_header(h) for h in first_line_headers + headers]   
+    content_cleaned = remove_code_blocks(content.split("\n"))
+
+    # find header lines
+    headers = [x for x in content_cleaned if re.search(r"^#+\ .*$", x)]
+
+    # determine header levels and format links
+    toc_levels = [format_header(h) for h in headers]
 
     # Create table of contents
-    toc = create_toc(toc_levels, args.level_limit)
+    toc = create_toc(toc_levels, args.limit)
 
     # Output toc
     for _ in toc:
         print(_)
+
+    if args.save_to_clipboard:
+        cp.copy("\n".join(toc))
+
+    if args.insert_in_file:
+        with open(file, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        new = "\n".join(toc) + "\n\n" + content
+
+        with open(file, "w", encoding="utf-8") as f:
+            f.write(new)
 
     if args.save_to_md:
         print(f"\n\nWriting TOC to {file}-toc.md ...")
@@ -161,9 +186,9 @@ def main():
             output_name = file[:-3] + '-toc.md'
         elif file[-9:] == '.markdown':
             output_name = file[:-9] + '-toc.markdown'
-        else: 
+        else:
             output_name = file + '-toc.md'
-        
+
         with open(output_name, "w") as writer:
             for f in toc:
                 writer.write(f + "\n")

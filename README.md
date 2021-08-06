@@ -8,7 +8,7 @@
 
 
 Extract the table of contents from a markdown file with an easy to use command line tool.
-## Installation 
+## Installation
 
 ```sh
 pip install extracttoc
@@ -17,7 +17,7 @@ pip install extracttoc
 ## Usage
 
 ```sh
-usage: extracttoc [-h] [-s] [-l LEVEL_LIMIT] file
+usage: extracttoc [-h] [-s] [-c] [-i] [-l LIMIT] file
 
 Extracts the table of contents from a markdown file.
 
@@ -26,37 +26,41 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -s, --save            Write the table of contents to a md file. File name will be: {input-file-name}-toc.md
-  -l LEVEL_LIMIT, --levels LEVEL_LIMIT
+  -s, --save            Write the TOC to a md file. File name will be: {input-file-name}-toc.md
+  -c, --copy            Copy the TOC to your clipboard
+  -i, --insert          Insert the TOC directly into the file in front of the first line.
+  -l LIMIT, --levels LIMIT
                         Set the number of levels which will be included in the TOC.
 ```
 
-## Examples 
+## Examples
 
 ```python
-> extracttoc myfile.md
+> extracttoc myfile.md  # displays the TOC
 
-> extracttoc -l 2 myfile.md  # limit toc to level 2
+> extracttoc -c myfile.md  # display & copy TOC to clipboard
 
-> extracttoc -l 2 -s myfile.md  # limit toc to level 2 and write to separate file
+> extracttoc -l 2 myfile.md  # limit TOC to header level 2
+
+> extracttoc -l 2 -s myfile.md  # limit TOC to lvl 2 & write to separate file
 ```
 
 
 
 ## Limitations
 
-The cli tool only works with hashtag-formatted headers, but not with equal-sign-formatted headers! 
+The cli tool only works with hashtag-formatted headers, but not with equal-sign-formatted headers!
 
 ```
-# This header will be recognized and included in the TOC 
+# This header will be recognized and included in the TOC
 
-Some text paragraph. 
+Some text paragraph.
 
 
 
-This header will not be recongized. 
-=== 
+This header will not be recongized.
+===
 
-Some text paragraph. 
+Some text paragraph.
 
 ```

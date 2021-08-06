@@ -15,11 +15,11 @@ setup(
     long_description=README,
     long_description_content_type='text/markdown',
     url='https://github.com/CribberSix/markdown-toc-extract',
-    version='0.3.2',
+    version='0.3.3',
     python_requires=">=3.6",
     author='CribberSix',
     author_email='cribbersix@gmail.com',
-    install_requires=['regex'],    
+    install_requires=['regex', 'clipboard'],
     entry_points ={
         'console_scripts': [
             'extracttoc = extracttoc.extracttoc:main'  # command = package.file:function
