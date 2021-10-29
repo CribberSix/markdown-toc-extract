@@ -16,6 +16,7 @@ pip install extracttoc
 
 ## Usage
 
+
 ```sh
 usage: extracttoc [-h] [-s] [-c] [-i] [-l LIMIT] file
 

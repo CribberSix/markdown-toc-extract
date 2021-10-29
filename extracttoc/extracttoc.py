@@ -4,14 +4,13 @@ import regex as re
 import argparse
 import pyperclip as cp
 
+from typing import List, Tuple
 
-def format_header(header):
+def format_header(header: str) -> Tuple[str, int, str]:
     """Calculates the level of the header, removes leading and trailing whitespaces and creates the markdown-link.
 
     :param header: header line from the markdown file
-    :type header: str
     :return: a tuple consisting of the cleaned header, the header level and the formatted markdown link.
-    :rtype: Tuple<str, str, str>
     """
 
     # determine header level
@@ -25,14 +24,13 @@ def format_header(header):
     return (header.strip(), level, headerlink)
 
 
-def remove_code_blocks(content):
+def remove_code_blocks(content: List[str]) -> List[str]:
     """Removes lines starting with "```" (=code blocks) from the markdown file.
 
     Since code blocks can contain lines with leading hashtags
     (e.g. comments in python) they need to be removed before looking for headers.
 
     :param content: file contents as a list of strings
-    :type content: List<str>
     :return: Cleaned List without codeblock lines
     :rtype: List<str>
     """
@@ -48,18 +46,15 @@ def remove_code_blocks(content):
     return content_cleaned
 
 
-def create_toc(toc_levels, level_limit):
+def create_toc(toc_levels: List[Tuple[str, int, str]], level_limit: int) -> List[str]:
     """Creates a list of strings representing the items in the table of content.
 
     The function works up to 111 header levels.
 
     :param toc_levels:  A list containing a tuple consisting of the header,
     					the level of the header and a formatted markdown-link to the header.
-    :type toc_levels: List<Tuple<str, int, str>>
     :param level_limit: Limits the number of levels included in the TOC
-    :rtype level_limit: int
     :return: Ordered items of the table of contents.
-    :rtype: List<str>
 
     Example for toc_levels:
 
@@ -148,13 +143,28 @@ def main():
         raise ValueError(f"File {file} could not be found.")
 
     with open(file, "r", encoding="utf-8") as f:
-        content = f.read()
+        content = f.read().split("\n")
 
     # remove code-blocks by iterating over lines and skipping lines between lines which start with ``` ....
-    content_cleaned = remove_code_blocks(content.split("\n"))
+    content_cleaned = remove_code_blocks(content) 
 
-    # find header lines
-    headers = [x for x in content_cleaned if re.search(r"^#+\ .*$", x)]
+    # identify header lines of both types
+    headers = []
+    re_hashtag_headers = r"^#+\ .*$"
+    re_alternative_header_lvl1 = r"^=+ *$"
+    re_alternative_header_lvl2 = r"^-+ *$"
+
+    for i, line in enumerate(content_cleaned): 
+        # identify headers by leading hashtags
+        if re.search(re_hashtag_headers, line): 
+            headers.append(line)
+        # identify alternative headers
+        elif re.search(re_alternative_header_lvl1, line): 
+            # add previous header line with unified format
+            headers.append('# ' + content_cleaned[i-1])  
+        elif re.search(re_alternative_header_lvl2, line): 
+            # add previous header line with unified format
+            headers.append('## ' + content_cleaned[i-1]) 
 
     # determine header levels and format links
     toc_levels = [format_header(h) for h in headers]
