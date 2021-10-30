@@ -1,9 +1,7 @@
-import sys
-from os.path import exists
 import regex as re
 import argparse
 import pyperclip as cp
-
+from os.path import exists
 from typing import List, Tuple
 
 
@@ -21,11 +19,12 @@ def identify_headers(lines: List[str]) -> List[str]:
         # identify alternative headers
         elif re.search(re_alternative_header_lvl1, line):
             # add previous header line with unified h1 format
-            headers.append('# ' + lines[i-1])
+            headers.append("# " + lines[i - 1])
         elif re.search(re_alternative_header_lvl2, line):
             # add previous header line with unified h2 format
-            headers.append('## ' + lines[i-1])
+            headers.append("## " + lines[i - 1])
     return headers
+
 
 def format_header(header: str) -> Tuple[str, int, str]:
     """Calculates the level of the header, removes leading and trailing whitespaces and creates the markdown-link.
@@ -42,7 +41,9 @@ def format_header(header: str) -> Tuple[str, int, str]:
 
     # create clickable link by allowing only certain characters,
     # by replacing whitespaces with hyphens and by removing colons
-    headerlink = "#" + re.sub(r'[^a-zA-Z0-9 -]', '', header).lower().strip().replace(" ", "-").replace("--", "-")
+    headerlink = "#" + re.sub(r"[^a-zA-Z0-9 -]", "", header).lower().strip().replace(
+        " ", "-"
+    ).replace("--", "-")
     return (header.strip(), level, headerlink)
 
 
@@ -59,7 +60,7 @@ def remove_code_blocks(content: List[str]) -> List[str]:
     code_block = False
 
     for x in content:
-        if x[:3] == '```':
+        if x[:3] == "```":
             code_block = not code_block
         elif not code_block:
             content_cleaned.append(x)
@@ -71,7 +72,7 @@ def create_toc(toc_levels: List[Tuple[str, int, str]], level_limit: int) -> List
     """Creates a list of strings representing the items in the table of content.
 
     :param toc_levels:  A list of Tuples consisting of the header,
-    					the level of the header and a formatted markdown-link to the header.
+                                        the level of the header and a formatted markdown-link to the header.
                         Example for toc_levels:
 
                                 [
@@ -98,7 +99,9 @@ def create_toc(toc_levels: List[Tuple[str, int, str]], level_limit: int) -> List
 
         # construct TOC element
         if level <= level_limit:
-            toc.append("\t" * (level - 1) + f"{headerlevels[level]}. [" + h + f"]({link})")
+            toc.append(
+                "\t" * (level - 1) + f"{headerlevels[level]}. [" + h + f"]({link})"
+            )
 
         # increment matching header level
         headerlevels[level] = headerlevels[level] + 1
@@ -192,12 +195,12 @@ def main():
         print(f"\n\nWriting TOC to {file}-toc.md ...")
 
         # determine filename
-        if file[-3:] == '.md':
-            output_name = file[:-3] + '-toc.md'
-        elif file[-9:] == '.markdown':
-            output_name = file[:-9] + '-toc.markdown'
+        if file[-3:] == ".md":
+            output_name = file[:-3] + "-toc.md"
+        elif file[-9:] == ".markdown":
+            output_name = file[:-9] + "-toc.markdown"
         else:
-            output_name = file + '-toc.md'
+            output_name = file + "-toc.md"
 
         with open(output_name, "w") as writer:
             for f in toc:

@@ -1,6 +1,3 @@
-
-# Example Header
-
 # extracttoc
 
 [![PyPi](https://img.shields.io/pypi/v/extracttoc?color=blue&style=plastic)](https://pypi.org/project/extracttoc/)
@@ -11,13 +8,13 @@
 
 
 Extract the table of contents from a markdown file with an easy to use command line tool.
-## Installation-Test
+## Installation
 
 ```sh
 pip install extracttoc
 ```
 
-## Usage Test
+## Usage
 
 
 ```sh
