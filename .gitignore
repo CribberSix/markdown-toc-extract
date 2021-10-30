@@ -1,6 +1,7 @@
-# User-specific stuff 
+# User-specific stuff
 testvenv/
 **/.idea/
+tmp.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
