@@ -6,8 +6,8 @@
 ![Repository size](https://img.shields.io/github/repo-size/Cribbersix/markdown-toc-extract?style=plastic)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg?style=plastic)](https://www.python.org/)
 
+Extract the table of contents from a markdown file with an easy to use command line tool written in Python.
 
-Extract the table of contents from a markdown file with an easy to use command line tool.
 ## Installation
 
 ```sh
@@ -44,24 +44,4 @@ optional arguments:
 > extracttoc -l 2 myfile.md  # limit TOC to header level 2
 
 > extracttoc -l 2 -s myfile.md  # limit TOC to lvl 2 & write to separate file
-```
-
-
-
-## Limitations
-
-The cli tool only works with hashtag-formatted headers, but not with equal-sign-formatted headers!
-
-```
-# This header will be recognized and included in the TOC
-
-Some text paragraph.
-
-
-
-This header will not be recongized.
-===
-
-Some text paragraph.
-
 ```

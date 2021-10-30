@@ -17,7 +17,7 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/CribberSix/markdown-toc-extract",
-    version="0.3.3",
+    version="0.4.0",
     python_requires=">=3.6",
     author="CribberSix",
     author_email="cribbersix@gmail.com",
@@ -29,7 +29,6 @@ setup(
     },
     classifiers=[
         # Trove classifiers
-        # (https://pypi.python.org/pypi?%3Aaction=list_classifiers)
         "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 3",
         "Topic :: Software Development :: Libraries",

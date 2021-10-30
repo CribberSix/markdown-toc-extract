@@ -116,6 +116,7 @@ def main():
         description="Extracts the table of contents from a markdown file.",
     )
 
+    # an argument that results in a list of strings with one element ('file')
     parser.add_argument(
         "file",
         nargs=1,
@@ -123,14 +124,7 @@ def main():
         type=str,
     )
 
-    parser.add_argument(
-        "-s",
-        "--save",
-        action="store_true",
-        dest="save_to_md",
-        help="Write the TOC to a md file. File name will be: {input-file-name}-toc.md",
-    )
-
+    # an argument that results in a boolean variable ('save_to_clipboard')
     parser.add_argument(
         "-c",
         "--copy",
@@ -139,6 +133,7 @@ def main():
         help="Copy the TOC to your clipboard",
     )
 
+    # an argument that results in a boolean variable ('insert_in_file')
     parser.add_argument(
         "-i",
         "--insert",
@@ -147,6 +142,16 @@ def main():
         help="Insert the TOC directly into the file in front of the first line.",
     )
 
+    # an argument that results in a boolean variable ('save_to_md')
+    parser.add_argument(
+        "-s",
+        "--save",
+        action="store_true",
+        dest="save_to_md",
+        help="Write the TOC to a md file. File name will be: {input-file-name}-toc.md",
+    )
+
+    # an argument whose passed value is stored in an integer variable ('limit')
     parser.add_argument(
         "-l",
         "--levels",
