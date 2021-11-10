@@ -6,7 +6,15 @@ from typing import List, Tuple
 
 
 def identify_headers(lines: List[str]) -> List[str]:
-    # identify header lines of both types
+    """
+    Filters a list of lines to the header lines.
+    Identifies headers of the 'leading-hashtag' type as well as
+    headers of the 'subsequent-line' type by using regex.
+
+    :param lines: List of header and text lines.
+    :returns: List of header lines.
+    """
+
     headers = []
     re_hashtag_headers = r"^#+\ .*$"
     re_alternative_header_lvl1 = r"^=+ *$"
@@ -16,13 +24,13 @@ def identify_headers(lines: List[str]) -> List[str]:
         # identify headers by leading hashtags
         if re.search(re_hashtag_headers, line):
             headers.append(line)
+
         # identify alternative headers
         elif re.search(re_alternative_header_lvl1, line):
-            # add previous header line with unified h1 format
-            headers.append("# " + lines[i - 1])
+            headers.append("# " + lines[i - 1])  # unified h1 format
         elif re.search(re_alternative_header_lvl2, line):
-            # add previous header line with unified h2 format
-            headers.append("## " + lines[i - 1])
+            headers.append("## " + lines[i - 1])  # unified h2 format
+
     return headers
 
 
@@ -164,12 +172,12 @@ def main():
     args = parser.parse_args()
 
     # read file
-    file = args.file[0]
+    file_name = args.file[0]
 
-    if not exists(file):
-        raise ValueError(f"File {file} could not be found.")
+    if not exists(file_name):
+        raise ValueError(f"File {file_name} could not be found.")
 
-    with open(file, "r", encoding="utf-8") as f:
+    with open(file_name, "r", encoding="utf-8") as f:
         content = f.read().split("\n")
 
     content_cleaned = remove_code_blocks(content)
@@ -188,24 +196,24 @@ def main():
         cp.copy("\n".join(toc))
 
     if args.insert_in_file:
-        with open(file, "r", encoding="utf-8") as f:
+        with open(file_name, "r", encoding="utf-8") as f:
             content = f.read()
 
         content_with_toc = "\n".join(toc) + "\n\n" + content
 
-        with open(file, "w", encoding="utf-8") as f:
+        with open(file_name, "w", encoding="utf-8") as f:
             f.write(content_with_toc)
 
     if args.save_to_md:
-        print(f"\n\nWriting TOC to {file}-toc.md ...")
+        print(f"\n\nWriting TOC to {file_name}-toc.md ...")
 
-        # determine filename
-        if file[-3:] == ".md":
-            output_name = file[:-3] + "-toc.md"
-        elif file[-9:] == ".markdown":
-            output_name = file[:-9] + "-toc.markdown"
+        # determine the TOC's new filename
+        if file_name[-3:] == ".md":
+            output_name = file_name[:-3] + "-toc.md"
+        elif file_name[-9:] == ".markdown":
+            output_name = file_name[:-9] + "-toc.markdown"
         else:
-            output_name = file + "-toc.md"
+            output_name = file_name + "-toc.md"
 
         with open(output_name, "w") as writer:
             for f in toc:
